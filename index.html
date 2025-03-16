@@ -255,397 +255,298 @@ var true_object = [""];
         }
     </script>
 
-    <script>
-        !(function() {
-            window.googletag = window.googletag || {};
-            window.vmpbjs = window.vmpbjs || {};
-            window.vpb = window.vpb || {};
-            vpb.cmd = vpb.cmd || [];
-            vpb.st = Date.now();
-            vpb.fastLoad = true;
-            googletag.cmd = googletag.cmd || [];
-            vmpbjs.cmd = vmpbjs.cmd || [];
-            var cmds = [];
-            try {
-                cmds = googletag.cmd.slice(0);
-                googletag.cmd.length = 0;
-            } catch (e) {}
-            var ready = false;
+   <script>
+  if (window.location.hash.indexOf('google_vignette') !== -1) {
+    sessionStorage.setItem('interstitialShown', 'true');
+    history.replaceState("", document.title, window.location.pathname + window.location.search);
+  }
+</script>
 
-            function exec(cb) {
-                return cb.call(googletag);
-            }
-            var overriden = false;
-            googletag.cmd.push(function() {
-                overriden = true;
-                googletag.cmd.unshift = function(cb) {
-                    if (ready) {
-                        return exec(cb);
-                    }
-                    cmds.unshift(cb);
-                    if (cb._startgpt) {
-                        ready = true;
-                        for (var k = 0; k < cmds.length; k++) {
-                            exec(cmds[k]);
-                        }
-                    }
-                };
-                googletag.cmd.push = function(cb) {
-                    if (ready) {
-                        return exec(cb);
-                    }
-                    cmds.push(cb);
-                };
-            });
-            if (!overriden) {
-                googletag.cmd.push = function(cb) {
-                    cmds.push(cb);
-                };
-                googletag.cmd.unshift = function(cb) {
-                    cmds.unshift(cb);
-                    if (cb._startgpt) {
-                        ready = true;
-                        if (googletag.apiReady) {
-                            cmds.forEach(function(cb) {
-                                googletag.cmd.push(cb);
-                            });
-                        } else {
-                            googletag.cmd = cmds;
-                        }
-                    }
-                };
-            }
-            var dayMs = 36e5,
-                cb = parseInt(Date.now() / dayMs),
-                vpbSrc = '//player.bidmatic.io/prebidlink/' + cb + '/wrapper_hb_306610_6686.js',
-                pbSrc = vpbSrc.replace('wrapper_hb', 'hb'),
-                gptSrc = '//securepubads.g.doubleclick.net/tag/js/gpt.js',
-                c = document.head || document.body || document.documentElement;
-
-            function loadScript(src, cb) {
-                var s = document.createElement('script');
-                s.src = src;
-                s.defer = false;
-                c.appendChild(s);
-                s.onload = cb;
-                s.onerror = function() {
-                    var fn = function() {};
-                    fn._startgpt = true;
-                    googletag.cmd.unshift(fn);
-                };
-                return s;
-            }
-            loadScript(pbSrc);
-            loadScript(gptSrc);
-            loadScript(vpbSrc);
-        })();
-    </script>
-
-    <script>
-        var googletag = googletag || {};
-        window.googletag = window.googletag || {
-            cmd: []
-        };
-        var Catfish;
-        var initialHeight = 90;
-        googletag.cmd = googletag.cmd || [];
-
-        var showFullscreen = true;
-        if (sessionStorage.getItem('interstitialShown')) {
-            showFullscreen = false;
-            sessionStorage.removeItem('interstitialShown');
+<script>
+  !(function () {
+    window.googletag = window.googletag || {};
+    window.vmpbjs = window.vmpbjs || {};
+    window.vpb = window.vpb || {};
+    vpb.cmd = vpb.cmd || [];
+    vpb.st = Date.now();
+    vpb.fastLoad = true;
+    googletag.cmd = googletag.cmd || [];
+    vmpbjs.cmd = vmpbjs.cmd || [];
+    var cmds = [];
+    try {
+      cmds = googletag.cmd.slice(0);
+      googletag.cmd.length = 0;
+    } catch (e) {
+      console.error('Error slicing googletag.cmd:', e);
+    }
+    var ready = false;
+    function exec(cb) {
+      return cb.call(googletag);
+    }
+    var overriden = false;
+    googletag.cmd.push(function () {
+      console.log('GPT command queue initialized');
+      overriden = true;
+      googletag.cmd.unshift = function (cb) {
+        if (ready) {
+          return exec(cb);
         }
-
-        var slot_interstitials;
-
-        googletag.cmd.push(function() {
-            var mapping = googletag
-                .sizeMapping()
-                .addSize([1349, 0], [
-                    [1366, 180],
-                    [1366, 90],
-                    [1280, 90],
-                    [1200, 90],
-                    [1080, 90],
-                    [1024, 90],
-                    [1000, 90],
-                    [980, 90],
-                    [970, 90],
-                    [960, 90],
-                    [950, 90],
-                    [728, 90]
-                ])
-                .addSize([1280, 0], [
-                    [1280, 90],
-                    [1200, 90],
-                    [1080, 90],
-                    [1024, 90],
-                    [1000, 90],
-                    [980, 90],
-                    [970, 90],
-                    [960, 90],
-                    [950, 90],
-                    [728, 90]
-                ])
-                .addSize([1200, 0], [
-                    [1200, 90],
-                    [1080, 90],
-                    [1024, 90],
-                    [1000, 90],
-                    [980, 90],
-                    [970, 90],
-                    [960, 90],
-                    [950, 90],
-                    [728, 90]
-                ])
-                .addSize([1080, 0], [
-                    [1080, 90],
-                    [1024, 90],
-                    [1000, 90],
-                    [980, 90],
-                    [970, 90],
-                    [960, 90],
-                    [950, 90],
-                    [728, 90]
-                ])
-                .addSize([1024, 0], [
-                    [1024, 90],
-                    [1000, 90],
-                    [980, 90],
-                    [970, 90],
-                    [960, 90],
-                    [950, 90],
-                    [728, 90]
-                ])
-                .addSize([1000, 0], [
-                    [1000, 90],
-                    [980, 90],
-                    [970, 90],
-                    [960, 90],
-                    [950, 90],
-                    [728, 90]
-                ])
-                .addSize([980, 0], [
-                    [980, 90],
-                    [970, 90],
-                    [960, 90],
-                    [950, 90],
-                    [728, 90]
-                ])
-                .addSize([970, 0], [
-                    [970, 90],
-                    [960, 90],
-                    [950, 90],
-                    [728, 90]
-                ])
-                .addSize([960, 0], [
-                    [960, 90],
-                    [950, 90],
-                    [728, 90]
-                ])
-                .addSize([950, 0], [
-                    [950, 90],
-                    [728, 90]
-                ])
-                .addSize([728, 0], [
-                    [728, 90],
-                    [468, 60]
-                ])
-                .addSize([468, 0], [
-                    [468, 60],
-                    [320, 50],
-                    [320, 100],
-                    [300, 100]
-                ])
-                .addSize([320, 0], [
-                    [320, 50],
-                    [320, 100],
-                    [300, 100]
-                ])
-                .addSize([0, 0], [
-                    [320, 50]
-                ])
-                .build();
-
-            if (window.innerWidth > 300) {
-                Catfish = googletag
-                    .defineSlot('/58302844/SLDS_Klopotenko_Catfish_Reborn', [
-                        [1366, 180],
-                        [1366, 90],
-                        [1280, 90],
-                        [1200, 90],
-                        [1080, 90],
-                        [1024, 90],
-                        [1000, 90],
-                        [980, 90],
-                        [970, 90],
-                        [960, 90],
-                        [950, 90],
-                        [728, 90],
-                        [468, 60],
-                        [320, 100],
-                        [300, 100],
-                        [320, 50]
-                    ], 'div-gpt-ad-1741022314627-0')
-                    .defineSizeMapping(mapping)
-                    .setCollapseEmptyDiv(true)
-                    .addService(googletag.pubads());
-            }
-
-            if (window.innerWidth >= 871) {
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Top_Reborn', [728, 90], 'div-gpt-ad-1741021819018-0').addService(googletag.pubads());
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium1_Reborn', [
-                    [300, 250],
-                    [200, 200],
-                    [300, 600],
-                    [250, 250],
-                    [300, 100]
-                ], 'div-gpt-ad-1741022061998-0').addService(googletag.pubads());
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium2_Reborn', [
-                    [200, 200],
-                    [300, 600],
-                    [250, 250],
-                    [300, 100],
-                    [300, 250]
-                ], 'div-gpt-ad-1741022130505-0').addService(googletag.pubads());
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Bottom_Reborn', [
-                    [580, 400],
-                    [300, 250],
-                    [320, 480],
-                    [336, 280]
-                ], 'div-gpt-ad-1741022244568-0').addService(googletag.pubads());
-            }
-
-            if (window.innerWidth <= 870) {
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Top_M_Reborn', [
-                    [320, 100],
-                    [320, 50]
-                ], 'div-gpt-ad-1741021658395-0').addService(googletag.pubads());
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium1_M_Reborn', [
-                    [250, 250],
-                    [300, 100],
-                    [300, 250],
-                    [200, 200]
-                ], 'div-gpt-ad-1741022403463-0').addService(googletag.pubads());
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium2_M_Reborn', [
-                    [250, 250],
-                    [300, 100],
-                    [300, 250],
-                    [200, 200]
-                ], 'div-gpt-ad-1741022444502-0').addService(googletag.pubads());
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium3_M_Reborn', [
-                    [200, 200],
-                    [250, 250],
-                    [300, 100],
-                    [300, 250]
-                ], 'div-gpt-ad-1741022505672-0').addService(googletag.pubads());
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium4_M_Reborn', [
-                    [200, 200],
-                    [250, 250],
-                    [300, 100],
-                    [300, 250]
-                ], 'div-gpt-ad-1741022559914-0').addService(googletag.pubads());
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium5_M_Reborn', [
-                    [250, 250],
-                    [300, 100],
-                    [300, 250],
-                    [200, 200]
-                ], 'div-gpt-ad-1741022612220-0').addService(googletag.pubads());
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium6_M_Reborn', [
-                    [200, 200],
-                    [300, 250],
-                    [250, 250],
-                    [300, 100]
-                ], 'div-gpt-ad-1741022667360-0').addService(googletag.pubads());
-            }
-
-
-            if (window.innerWidth <= 960 && showFullscreen) {
-                googletag.defineSlot('/58302844/SLDS_Klopotenko_Fullscreen_Reborn', [
-                    [240, 400],
-                    [300, 250],
-                    [320, 480]
-                ], 'div-gpt-ad-1741019452618-0').addService(googletag.pubads());
-            }
-
-
-            slot_interstitials = googletag.defineOutOfPageSlot('/58302844/SLDS_Klopotenko_Interstitials_Reborn', googletag.enums.OutOfPageFormat.INTERSTITIAL);
-            if (slot_interstitials) {
-                slot_interstitials.addService(googletag.pubads());
-                googletag.pubads().refresh([slot_interstitials]);
-            }
-
-            googletag.pubads().enableSingleRequest();
-            googletag.pubads().collapseEmptyDivs();
-            googletag.enableServices();
-
-            // Логіка для Catfish
-            googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-                if (event.slot === Catfish) {
-                    var wrapper = document.getElementById('banner-wrapper');
-                    if (event.isEmpty) {
-                        wrapper.style.display = 'none';
-                    } else {
-                        wrapper.style.display = 'block';
-                        var size = event.size;
-                        initialHeight = size[1];
-                        document.getElementById('banner').style.height = initialHeight + 'px';
-                        var adContainer = document.getElementById('div-gpt-ad-1741022314627-0');
-                        adContainer.style.height = initialHeight + 'px';
-                        setTimeout(() => {
-                            var iframe = adContainer.querySelector('iframe');
-                            if (iframe) {
-                                iframe.style.margin = '0 auto';
-                                iframe.style.display = 'block';
-                            }
-                        }, 100);
-                    }
-                }
+        cmds.unshift(cb);
+        if (cb._startgpt) {
+          ready = true;
+          for (var k = 0; k < cmds.length; k++) {
+            exec(cmds[k]);
+          }
+        }
+      };
+      googletag.cmd.push = function (cb) {
+        if (ready) {
+          return exec(cb);
+        }
+        cmds.push(cb);
+      };
+    });
+    if (!overriden) {
+      googletag.cmd.push = function (cb) {
+        cmds.push(cb);
+      };
+      googletag.cmd.unshift = function (cb) {
+        cmds.unshift(cb);
+        if (cb._startgpt) {
+          ready = true;
+          if (googletag.apiReady) {
+            cmds.forEach(function (cb) {
+              googletag.cmd.push(cb);
             });
+          } else {
+            googletag.cmd = cmds;
+          }
+        }
+      };
+    }
+    var dayMs = 36e5,
+      cb = parseInt(Date.now() / dayMs),
+      vpbSrc = '//player.bidmatic.io/prebidlink/' + cb + '/wrapper_hb_306610_6686.js',
+      pbSrc = vpbSrc.replace('wrapper_hb', 'hb'),
+      gptSrc = '//securepubads.g.doubleclick.net/tag/js/gpt.js',
+      c = document.head || document.body || document.documentElement;
+    function loadScript(src, cb) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = false;
+      s.onload = function () {
+        console.log('Script loaded:', src);
+        if (cb) cb();
+      };
+      s.onerror = function () {
+        console.error('Failed to load script:', src);
+        var fn = function () {};
+        fn._startgpt = true;
+        googletag.cmd.unshift(fn);
+      };
+      c.appendChild(s);
+      return s;
+    }
+    loadScript(pbSrc);
+    loadScript(gptSrc);
+    loadScript(vpbSrc);
+  })();
+</script>
 
-            // Логіка для Fullscreen
-            googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-                if (event.slot.getSlotElementId() === 'div-gpt-ad-1741019452618-0') {
-                    if (!event.isEmpty) {
-                        document.getElementById('full-close-container').style.display = 'block';
-                        document.getElementById('ad-banner-header').style.display = 'flex';
-                        document.getElementById('div-gpt-ad-1741019452618-0').style.display = 'flex';
-                    }
-                }
-            });
+<script>
+  var googletag = googletag || {};
+  window.googletag = window.googletag || { cmd: [] };
+  var Catfish;
+  var initialHeight = 90;
+  googletag.cmd = googletag.cmd || [];
+  
+  var showFullscreen = true;
+  if (sessionStorage.getItem('interstitialShown')) {
+    showFullscreen = false;
+    sessionStorage.removeItem('interstitialShown');
+  }
+  
+  var slot_interstitials;
 
+  googletag.cmd.push(function () {
+    var mapping = googletag
+      .sizeMapping()
+      .addSize([1349, 0], [
+        [1366, 180], [1366, 90], [1280, 90], [1200, 90], [1080, 90], [1024, 90], [1000, 90],
+        [980, 90], [970, 90], [960, 90], [950, 90], [728, 90]
+      ])
+      .addSize([1280, 0], [
+        [1280, 90], [1200, 90], [1080, 90], [1024, 90], [1000, 90], [980, 90], [970, 90],
+        [960, 90], [950, 90], [728, 90]
+      ])
+      .addSize([1200, 0], [
+        [1200, 90], [1080, 90], [1024, 90], [1000, 90], [980, 90], [970, 90], [960, 90],
+        [950, 90], [728, 90]
+      ])
+      .addSize([1080, 0], [
+        [1080, 90], [1024, 90], [1000, 90], [980, 90], [970, 90], [960, 90], [950, 90],
+        [728, 90]
+      ])
+      .addSize([1024, 0], [
+        [1024, 90], [1000, 90], [980, 90], [970, 90], [960, 90], [950, 90], [728, 90]
+      ])
+      .addSize([1000, 0], [
+        [1000, 90], [980, 90], [970, 90], [960, 90], [950, 90], [728, 90]
+      ])
+      .addSize([980, 0], [[980, 90], [970, 90], [960, 90], [950, 90], [728, 90]])
+      .addSize([970, 0], [[970, 90], [960, 90], [950, 90], [728, 90]])
+      .addSize([960, 0], [[960, 90], [950, 90], [728, 90]])
+      .addSize([950, 0], [[950, 90], [728, 90]])
+      .addSize([728, 0], [[728, 90], [468, 60]])
+      .addSize([468, 0], [[468, 60], [320, 50], [320, 100], [300, 100]])
+      .addSize([320, 0], [[320, 50], [320, 100], [300, 100]])
+      .addSize([0, 0], [[320, 50]])
+      .build();
 
-        });
+    if (window.innerWidth > 300) {
+      Catfish = googletag
+        .defineSlot('/58302844/SLDS_Klopotenko_Catfish_Reborn', [
+          [1366, 180], [1366, 90], [1280, 90], [1200, 90], [1080, 90], [1024, 90], [1000, 90],
+          [980, 90], [970, 90], [960, 90], [950, 90], [728, 90], [468, 60], [320, 100],
+          [300, 100], [320, 50]
+        ], 'div-gpt-ad-1741022314627-0')
+        .defineSizeMapping(mapping)
+        .setCollapseEmptyDiv(true)
+        .addService(googletag.pubads());
+    }
 
-        // Обробники подій для Catfish
-        window.addEventListener('load', function() {
-            var hideButton = document.getElementById('hide-button');
-            var banner = document.getElementById('banner');
-            var isCollapsed = false;
-            hideButton.addEventListener('click', function() {
-                isCollapsed = !isCollapsed;
-                if (isCollapsed) {
-                    banner.classList.add('collapsed');
-                    hideButton.style.transform = 'rotate(180deg)';
-                } else {
-                    banner.classList.remove('collapsed');
-                    banner.style.height = initialHeight + 'px';
-                    hideButton.style.transform = 'rotate(0deg)';
-                }
-            });
-        });
+    if (window.innerWidth >= 871) {
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Top_Reborn', [728, 90], 'div-gpt-ad-1741021819018-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium1_Reborn', [[300, 250], [200, 200], [300, 600], [250, 250], [300, 100]], 'div-gpt-ad-1741022061998-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium2_Reborn', [[200, 200], [300, 600], [250, 250], [300, 100], [300, 250]], 'div-gpt-ad-1741022130505-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Bottom_Reborn', [[580, 400], [300, 250], [320, 480], [336, 280]], 'div-gpt-ad-1741022244568-0').addService(googletag.pubads());
+    }
 
-        // Обробник подій для Fullscreen
-        window.addEventListener('load', function() {
-            var closeButton = document.getElementById('full-close');
-            closeButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.getElementById('div-gpt-ad-1741019452618-0').style.display = 'none';
-                document.getElementById('ad-banner-header').style.display = 'none';
-                document.getElementById('full-close-container').style.display = 'none';
-            });
-        });
-    </script>
+    if (window.innerWidth <= 870) {
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Top_M_Reborn', [[320, 100], [320, 50]], 'div-gpt-ad-1741021658395-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium1_M_Reborn', [[250, 250], [300, 100], [300, 250], [200, 200]], 'div-gpt-ad-1741022403463-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium2_M_Reborn', [[250, 250], [300, 100], [300, 250], [200, 200]], 'div-gpt-ad-1741022444502-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium3_M_Reborn', [[200, 200], [250, 250], [300, 100], [300, 250]], 'div-gpt-ad-1741022505672-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium4_M_Reborn', [[200, 200], [250, 250], [300, 100], [300, 250]], 'div-gpt-ad-1741022559914-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium5_M_Reborn', [[250, 250], [300, 100], [300, 250], [200, 200]], 'div-gpt-ad-1741022612220-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium6_M_Reborn', [[200, 200], [300, 250], [250, 250], [300, 100]], 'div-gpt-ad-1741022667360-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Premium7_M_Reborn', [[200, 200], [300, 250], [250, 250], [300, 100]], 'div-gpt-ad-1741956620485-0').addService(googletag.pubads());
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Bottom_Reborn', [[580, 400], [300, 250], [320, 480], [336, 280]], 'div-gpt-ad-1741022244568-0').addService(googletag.pubads());
+    }
+
+    if (window.innerWidth <= 960 && showFullscreen) {
+      googletag.defineSlot('/58302844/SLDS_Klopotenko_Fullscreen_Reborn', [[240, 400], [300, 250], [320, 480]], 'div-gpt-ad-1741019452618-0').addService(googletag.pubads());
+    }
+
+    slot_interstitials = googletag.defineOutOfPageSlot('/58302844/SLDS_Klopotenko_Interstitials_Reborn', googletag.enums.OutOfPageFormat.INTERSTITIAL);
+    if (slot_interstitials) {
+      slot_interstitials.addService(googletag.pubads());
+      googletag.pubads().refresh([slot_interstitials]);
+    }
+
+    googletag.pubads().enableSingleRequest();
+    googletag.pubads().collapseEmptyDivs();
+    googletag.enableServices();
+
+    // Логіка для Catfish
+    googletag.pubads().addEventListener('slotRenderEnded', function (event) {
+      if (event.slot === Catfish) {
+        var wrapper = document.getElementById('banner-wrapper');
+        if (event.isEmpty) {
+          wrapper.style.display = 'none';
+        } else {
+          wrapper.style.display = 'block';
+          var size = event.size;
+          initialHeight = size[1];
+          document.getElementById('banner').style.height = initialHeight + 'px';
+          var adContainer = document.getElementById('div-gpt-ad-1741022314627-0');
+          adContainer.style.height = initialHeight + 'px';
+          setTimeout(() => {
+            var iframe = adContainer.querySelector('iframe');
+            if (iframe) {
+              iframe.style.margin = '0 auto';
+              iframe.style.display = 'block';
+            }
+          }, 100);
+        }
+      }
+    });
+
+    // Логіка для Fullscreen
+    googletag.pubads().addEventListener('slotRenderEnded', function (event) {
+      console.log('Slot render ended:', event.slot.getSlotElementId(), event.isEmpty);
+      if (event.slot.getSlotElementId() === 'div-gpt-ad-1741019452618-0') {
+        if (!event.isEmpty) {
+          console.log('Fullscreen ad rendered successfully');
+          document.getElementById('full-close-container').style.display = 'flex';
+          document.getElementById('div-gpt-ad-1741019452618-0').style.display = 'flex';
+
+          // Ініціалізація таймера
+          var timerElement = document.getElementById('close-timer');
+          var closeButton = document.getElementById('full-close-btn');
+          var seconds = 3;
+
+          if (timerElement && closeButton) {
+            closeButton.style.display = 'none';             
+            closeButton.disabled = true; 
+            closeButton.style.opacity = '0.5';
+            timerElement.textContent = `Закриття через ${seconds} секунд`;
+
+            var countdown = setInterval(function () {
+              seconds--;
+              timerElement.textContent = `Закриття через ${seconds} секунд`;
+              if (seconds <= 0) {
+                clearInterval(countdown);
+                timerElement.style.display = 'none';                                    
+                closeButton.style.display = 'block';
+                closeButton.disabled = false;
+                closeButton.style.opacity = '1';               }
+            }, 1000);
+          }
+        } else {
+          console.log('Fullscreen ad slot is empty');
+        }
+      }
+    });
+  });
+
+  // Обробники подій для Catfish
+  window.addEventListener('load', function () {
+    var hideButton = document.getElementById('hide-button');
+    var banner = document.getElementById('banner');
+    var isCollapsed = false;
+    if (hideButton && banner) {
+      hideButton.addEventListener('click', function () {
+        isCollapsed = !isCollapsed;
+        if (isCollapsed) {
+          banner.classList.add('collapsed');
+          hideButton.style.transform = 'rotate(180deg)';
+        } else {
+          banner.classList.remove('collapsed');
+          banner.style.height = initialHeight + 'px';
+          hideButton.style.transform = 'rotate(0deg)';
+        }
+      });
+    }
+  });
+
+  // Обробник подій для Fullscreen
+  document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM fully loaded, attaching close button event');
+    var closeButton = document.getElementById('full-close-btn');
+    if (closeButton) {
+      console.log('Close button found, adding click event');
+      closeButton.addEventListener('click', function () {
+        console.log('Close button clicked');
+        document.getElementById('div-gpt-ad-1741019452618-0').style.display = 'none';
+        document.getElementById('full-close-container').style.display = 'none';
+      });
+    } else {
+      console.error('Close button not found');
+    }
+  });
+</script>
+
 
 		<!-- Global site tag (gtag.js) - Google Analytics NEW -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z4E04QNTR7" type="pmdelayedscript" data-cfasync="false" data-no-optimize="1" data-no-defer="1" data-no-minify="1" data-rocketlazyloadscript="1"></script>
@@ -1360,16 +1261,76 @@ var true_object = [""];
                 </script>
             </div>
 
-            <!-- Fullscreen Ad -->
-            <div id="ad-banner-header" style="display: none;"></div>
-            <div id="full-close-container" style="display: none;">
-                <a href="#" id="full-close"></a>
-            </div>
-            <div id="div-gpt-ad-1741019452618-0" style="display: none;">
-                <script>
-                    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1741019452618-0'); });
-                </script>
-            </div>
+           <!-- /58302844/SLDS_Klopotenko_Fullscreen_Reborn -->
+
+<div id="full-close-container" style="display: none;">
+  <div id="close-timer"></div>
+  <button id="full-close-btn" aria-label="Close advertisement"></button>
+</div>
+<div id="div-gpt-ad-1741019452618-0" style="display: none;">
+  <script>
+    googletag.cmd.push(function() { googletag.display('div-gpt-ad-1741019452618-0'); });
+  </script>
+</div>
+
+<style>
+  #div-gpt-ad-1741019452618-0 {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
+    z-index: 214748301;
+    max-width: 100%;
+    background-color: rgba(33,33,33,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 60px;
+  }
+  #div-gpt-ad-1741019452618-0 > * {
+    flex: 0 0 auto;
+    justify-content: center;
+    display: flex;
+  }
+  #full-close-container {
+    position: fixed;
+    height: 35px;
+    width: auto;
+    top: 5px;
+    right: 10px;
+    z-index: 2147483010;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  #close-timer {
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    margin-right: 5px;
+    white-space: nowrap;
+  }
+  #full-close-btn {
+    position: relative;
+    background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M18.53%205.47l-7.59%207.59-7.59-7.59a1%201%200%2000-1.41%201.41l7.59%207.59-7.59%207.59a1%201%200%20001.41%201.41l7.59-7.59%207.59%207.59a1%201%200%20001.41-1.41l-7.59-7.59%207.59-7.59a1%201%200%2000-1.41-1.41z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E');
+    background-size: 100% 100%;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    display: block;
+    z-index: 2147483010;
+  }
+  #full-close-btn:disabled {
+    cursor: not-allowed;
+  }
+</style>
+
+<!-- End /58302844/SLDS_Klopotenko_Fullscreen_Reborn -->
+
 
             <!-- Catfish Ad -->
             <div id="banner-wrapper">
@@ -1388,57 +1349,6 @@ var true_object = [""];
 
 <!-- Стилі для рекламних блоків -->
 <style>
-    #div-gpt-ad-1741019452618-0 {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        top: 0;
-        margin: auto;
-        z-index: 214748301;
-        max-width: 100%;
-        background-color: rgba(33,33,33,0.9);
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding-top: 35px;
-    }
-    #div-gpt-ad-1741019452618-0 > * {
-        flex: 0 0 auto;
-        justify-content: center;
-        display: flex;
-    }
-    #ad-banner-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 25px;
-        background-color: rgba(33,33,33,0.1);
-        justify-content: center;
-        align-items: center;
-        font-size: 20px;
-        z-index: 2147483010;
-    }
-    #full-close-container {
-        position: absolute;
-        height: 25px;
-        width: 25px;
-        top: 5px;
-        right: 0;
-        z-index: 2147483010;
-    }
-    #full-close {
-        position: fixed;
-        top: 3px;
-        right: 5px;
-        background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M18.53%205.47l-7.59%207.59-7.59-7.59a1%201%200%2000-1.41%201.41l7.59%207.59-7.59%207.59a1%201%200%20001.41%201.41l7.59-7.59%207.59%207.59a1%201%200%20001.41-1.41l-7.59-7.59%207.59-7.59a1%201%200%2000-1.41-1.41z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E');
-        background-size: 100% 100%;
-        width: 25px;
-        height: 25px;
-        display: block;
-        z-index: 2147483010;
-    }
     #banner-wrapper {
         position: fixed;
         bottom: 0;
